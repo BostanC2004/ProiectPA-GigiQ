@@ -6,9 +6,9 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-Node* createNode(double v);
-void addAtEnd(Node **head, double v);
-void freeList(Node **head);
+Node *createNode(double val);
+void addAtEnd(Node **head, double val);
 int getLength(Node *head);
+void freeList(Node **head);
 
 #endif
