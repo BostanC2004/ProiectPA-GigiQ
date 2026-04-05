@@ -12,8 +12,8 @@
   <line>Command: /mnt/d/Facultate/Proiect PA/gigiquant/src/test /mnt/d/Facultate/Proiect PA/gigiquant/in/data17.in /mnt/d/Facultate/Proiect PA/gigiquant/out/data17.out</line>
 </preamble>
 
-<pid>1273</pid>
-<ppid>1247</ppid>
+<pid>2318</pid>
+<ppid>2275</ppid>
 <tool>memcheck</tool>
 
 <args>
@@ -32,13 +32,13 @@
 
 <status>
   <state>RUNNING</state>
-  <time>00:00:00:00.107 </time>
+  <time>00:00:00:00.136 </time>
 </status>
 
 
 <status>
   <state>FINISHED</state>
-  <time>00:00:00:01.535 </time>
+  <time>00:00:00:01.638 </time>
 </status>
 
 <errorcounts>
