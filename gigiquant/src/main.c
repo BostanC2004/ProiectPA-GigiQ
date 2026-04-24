@@ -27,7 +27,7 @@ static int is_task1_input(FILE *fin) {
     return ok;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *const argv[]) {
     if (argc < 3) return 1;
 
     FILE *fin = fopen(argv[1], "r");
