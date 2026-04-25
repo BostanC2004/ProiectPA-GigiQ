@@ -16,7 +16,7 @@ static void print3(FILE *fout, double x) {
         fprintf(fout, "-");
         scaled = -scaled;
     }
-
+    // %03lld e un "trick" care pune zerouri in fata daca restul e < 100
     fprintf(fout, "%lld.%03lld\n", scaled / 1000, scaled % 1000);
 }
 

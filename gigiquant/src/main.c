@@ -4,6 +4,10 @@
 #include "task1.h"
 #include "task2.h"
 
+// File Peeking:
+// Folosim ftell pentru a salva pozitia curenta si fseek pentru a ne intoarce
+// Asta ne permite sa "tragem cu ochiul" la prima linie ca sa stim ce task sa rulam
+// fara sa "stricam" cursorul de citire pentru functiile de solve
 static int is_task1_input(FILE *fin) {
     long pos = ftell(fin);
     char line[256];

@@ -20,6 +20,7 @@ typedef struct QNode {
     struct QNode *next;
 } QNode;
 
+// Folosim memmove in trim() pentru ca zonele de memorie se suprapun
 static void trim(char *s) {
     int len = (int)strlen(s);
 
@@ -40,10 +41,12 @@ static void trim(char *s) {
     }
 }
 
+// strtod e mult mai sigur decat atof. endptr ne spune exact unde s-a oprit parsarea
+// permitandu-ne sa detectam daca linia contine si gunoi dupa numar
 static int is_number_line(const char *s, double *val) {
     char *endptr;
     double x = strtod(s, &endptr);
-
+    // Verificam daca am consumat tot string-ul sau doar spatiile de dupa
     if (s == endptr) {
         return 0;
     }
@@ -60,6 +63,7 @@ static int is_number_line(const char *s, double *val) {
     return 1;
 }
 
+// 1e-9 (epsilon) este marja de eroare standard pentru a considera doua numere reale egale
 static int equalDouble(double a, double b) {
     return fabs(a - b) < 1e-9;
 }
