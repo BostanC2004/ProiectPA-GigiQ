@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include "task1.h"
 #include "task2.h"
+#include "task3.h"
 
 // File Peeking:
-// Folosim ftell pentru a salva pozitia curenta si fseek pentru a ne intoarce
+// Folosim ftell pentru a salva pozitia curenta si fseek pentru a ne intoarce.
 // Asta ne permite sa "tragem cu ochiul" la prima linie ca sa stim ce task sa rulam
-// fara sa "stricam" cursorul de citire pentru functiile de solve
+// fara sa "stricam" cursorul de citire pentru functiile de solve.
 static int is_task1_input(FILE *fin) {
     long pos = ftell(fin);
     char line[256];
@@ -15,7 +17,9 @@ static int is_task1_input(FILE *fin) {
 
     while (fgets(line, sizeof(line), fin) != NULL) {
         char *p = line;
-        while (*p && isspace((unsigned char)*p)) p++;
+        while (*p && isspace((unsigned char)*p)) {
+            p++;
+        }
 
         if (*p == '\0' || *p == '\n' || *p == '\r') {
             continue;
@@ -31,20 +35,53 @@ static int is_task1_input(FILE *fin) {
     return ok;
 }
 
+static int is_task3_input(FILE *fin) {
+    long pos = ftell(fin);
+    char line[512];
+    int ok = 0;
+
+    while (fgets(line, sizeof(line), fin) != NULL) {
+        char *p = line;
+        while (*p && isspace((unsigned char)*p)) {
+            p++;
+        }
+
+        if (*p == '\0' || *p == '\n' || *p == '\r') {
+            continue;
+        }
+
+        if (strchr(p, ',') != NULL) {
+            ok = 1;
+        }
+        break;
+    }
+
+    fseek(fin, pos, SEEK_SET);
+    return ok;
+}
+
 int main(int argc, const char *const argv[]) {
-    if (argc < 3) return 1;
+    if (argc < 3) {
+        return 1;
+    }
 
     FILE *fin = fopen(argv[1], "r");
     FILE *fout = fopen(argv[2], "w");
 
     if (fin == NULL || fout == NULL) {
-        if (fin != NULL) fclose(fin);
-        if (fout != NULL) fclose(fout);
+        if (fin != NULL) {
+            fclose(fin);
+        }
+        if (fout != NULL) {
+            fclose(fout);
+        }
         return 1;
     }
 
     if (is_task1_input(fin)) {
         solveTask1(fin, fout);
+    } else if (is_task3_input(fin)) {
+        solveTask3(fin, fout);
     } else {
         solveTask2(fin, fout);
     }

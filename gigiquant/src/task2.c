@@ -41,8 +41,6 @@ static void trim(char *s) {
     }
 }
 
-// strtod e mult mai sigur decat atof. endptr ne spune exact unde s-a oprit parsarea
-// permitandu-ne sa detectam daca linia contine si gunoi dupa numar
 static int is_number_line(const char *s, double *val) {
     char *endptr;
     double x = strtod(s, &endptr);
