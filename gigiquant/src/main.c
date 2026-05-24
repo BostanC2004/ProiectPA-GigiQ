@@ -8,10 +8,10 @@
 #include "task3.h"
 #include "task4.h"
 
-// File Peeking:
-// Folosim ftell pentru a salva pozitia curenta si fseek pentru a ne intoarce
-// Asta ne permite sa "tragem cu ochiul" la prima linie ca sa stim ce task sa rulam
-// fara sa "stricam" cursorul de citire pentru functiile de solve
+/*
+ * Main-ul doar identifica formatul inputului
+ * si apeleaza taskul potrivit.
+ */
 
 static void skip_left(char **p) {
     while (**p != '\0' && isspace((unsigned char)**p)) {
@@ -53,6 +53,7 @@ static int count_nonempty(FILE *fin) {
             cnt++;
         }
     }
+
     return cnt;
 }
 
@@ -78,14 +79,20 @@ int main(int argc, const char *const argv[]) {
     }
 
     if (strchr(line, ',') != NULL) {
+        /* Task 3: simboluri separate prin virgula */
         fseek(fin, pos, SEEK_SET);
         solveTask3(fin, fout);
     } else if (isalpha((unsigned char)line[0])) {
+        /* Task 2: inputul incepe cu numele pietelor */
         fseek(fin, pos, SEEK_SET);
         solveTask2(fin, fout);
     } else {
         int n;
         if (parse_int_line(line, &n)) {
+            /*
+             * Task 4 are exact N + 4 linii non-goale:
+             * N, d, K, Pstart, Ptarget si apoi N preturi.
+             */
             int rem = count_nonempty(fin);
             fseek(fin, pos, SEEK_SET);
 

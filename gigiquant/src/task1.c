@@ -4,7 +4,17 @@
 #include "task1.h"
 #include "list.h"
 
+/*
+ * Task 1:
+ * - citesc preturile intr-o lista
+ * - calculez randamentele dintre zile consecutive
+ * - apoi media, volatilitatea si Sharpe Ratio
+ *
+ * Ideea importanta: sigma are nevoie de mu, deci facem doua parcurgeri.
+ */
+
 static void print3(FILE *fout, double x) {
+    /* Trunchiere la 3 zecimale, nu rotunjire */
     long long scaled = (long long)trunc(x * 1000.0);
 
     if (scaled == 0) {
@@ -16,7 +26,7 @@ static void print3(FILE *fout, double x) {
         fprintf(fout, "-");
         scaled = -scaled;
     }
-    // %03lld e un "trick" care pune zerouri in fata daca restul e < 100
+
     fprintf(fout, "%lld.%03lld\n", scaled / 1000, scaled % 1000);
 }
 
@@ -29,6 +39,7 @@ void solveTask1(FILE *fin, FILE *fout) {
 
     Node *prices = NULL;
 
+    /* Pasul 1: citesc preturile in ordine cronologica */
     for (int i = 0; i < n; i++) {
         double x;
         if (fscanf(fin, "%lf", &x) != 1) {
@@ -45,6 +56,7 @@ void solveTask1(FILE *fin, FILE *fout) {
         return;
     }
 
+    /* Pasul 2: randamentele simple si suma lor */
     double sum = 0.0;
     int cnt = 0;
 
@@ -56,8 +68,13 @@ void solveTask1(FILE *fin, FILE *fout) {
         p = p->next;
     }
 
+    /* Mu = media randamentelor */
     double mu = (cnt > 0) ? sum / cnt : 0.0;
 
+    /*
+     * Pasul 3: a doua trecere.
+     * Sigma depinde de mu, deci trebuie recalculez randamentele.
+     */
     double sumSq = 0.0;
     p = prices;
     while (p != NULL && p->next != NULL) {
@@ -67,6 +84,8 @@ void solveTask1(FILE *fin, FILE *fout) {
     }
 
     double sigma = (cnt > 0) ? sqrt(sumSq / cnt) : 0.0;
+
+    /* Rf = 0 in enunt, deci Sharpe = mu / sigma */
     double sharpe = (sigma != 0.0) ? (mu / sigma) : 0.0;
 
     print3(fout, mu);

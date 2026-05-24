@@ -3,6 +3,17 @@
 #include <math.h>
 #include "task4.h"
 
+/*
+ * Task 4:
+ * - transform preturile in stari Markov (intervale de marime d)
+ * - numar tranzitiile observate intre stari
+ * - simulez zi cu zi probabilitatile
+ *
+ * Aici folosesc ideea de DP bottom-up:
+ * cur = ziua curenta
+ * nxt = ziua urmatoare
+ */
+
 typedef struct {
     long long n, d;
 } Fr;
@@ -144,6 +155,10 @@ void solveTask4(FILE *fin, FILE *fout) {
         return;
     }
 
+    /*
+     * cnt[i][j] = cate tranzitii observate am avut din starea i in starea j
+     * out[i]    = cate tranzitii pleaca din starea i
+     */
     for (int i = 0; i < N - 1; i++) {
         int a = find_state(all, M, state_of(p[i], d));
         int b = find_state(all, M, state_of(p[i + 1], d));
@@ -165,6 +180,7 @@ void solveTask4(FILE *fin, FILE *fout) {
         return;
     }
 
+    /* Ziua 1: suntem sigur in starea initiala */
     cur[s] = (Fr){ 1, 1 };
 
     for (int day = 1; day <= K; day++) {
@@ -180,6 +196,7 @@ void solveTask4(FILE *fin, FILE *fout) {
         for (int i = 0; i < M; i++) {
             if (cur[i].n == 0) continue;
 
+            /* Daca o stare nu are iesiri, ramane in ea */
             if (out[i] == 0) {
                 nxt[i] = add(nxt[i], cur[i]);
                 continue;

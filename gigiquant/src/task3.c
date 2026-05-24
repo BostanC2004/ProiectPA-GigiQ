@@ -4,6 +4,19 @@
 #include <ctype.h>
 #include "task3.h"
 
+/*
+ * Task 3:
+ * - prima linie contine simbolurile celor 10 actiuni
+ * - apoi citesc randurile de preturi
+ * - pentru fiecare actiune construiesc o semnatura U/D
+ *
+ * U = urcare sau stagnare
+ * D = scadere
+ *
+ * La final compar semnaturile doua cate doua.
+ * Daca una este inversul celeilalte, afisez perechea.
+ */
+
 #define MAX_STOCKS 10
 #define MAX_SYMBOL 32
 #define MAX_LINE 512
@@ -96,11 +109,10 @@ void solveTask3(FILE *fin, FILE *fout) {
 
     int nstocks = 0;
 
+    /* Prima linie: simbolurile actiunilor */
     while (fgets(line, sizeof(line), fin) != NULL) {
         trim(line);
-        if (line[0] == '\0') {
-            continue;
-        }
+        if (line[0] == '\0') continue;
 
         char first[MAX_LINE];
         strncpy(first, line, MAX_LINE - 1);
@@ -118,11 +130,13 @@ void solveTask3(FILE *fin, FILE *fout) {
     double curr[MAX_STOCKS];
     int hasPrev = 0;
 
+    /*
+     * Primul rand cu preturi devine baza.
+     * De la al doilea incolo pot compara evolutia fiecarui stock.
+     */
     while (fgets(line, sizeof(line), fin) != NULL) {
         trim(line);
-        if (line[0] == '\0') {
-            continue;
-        }
+        if (line[0] == '\0') continue;
 
         char copy[MAX_LINE];
         strncpy(copy, line, MAX_LINE - 1);
@@ -151,6 +165,9 @@ void solveTask3(FILE *fin, FILE *fout) {
         }
     }
 
+    /*
+     * Daca doua semnaturi sunt exact inverse, stock-urile se misca opus.
+     */
     int first_out = 1;
 
     for (int i = 0; i < nstocks; i++) {

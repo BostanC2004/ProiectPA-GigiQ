@@ -4,6 +4,7 @@
 Node *createNode(double val) {
     Node *node = (Node *)malloc(sizeof(Node));
     if (!node) return NULL;
+
     node->val = val;
     node->next = NULL;
     return node;

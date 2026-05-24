@@ -6,8 +6,13 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
+/* Nod simplu pentru lista de preturi */
 Node *createNode(double val);
+
+/* Adauga la final, ca sa pastram ordinea cronologica */
 void addAtEnd(Node **head, double val);
+
+/* Elibereaza toata lista */
 void freeList(Node **head);
 
 #endif
