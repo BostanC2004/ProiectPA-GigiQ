@@ -2,88 +2,102 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+
 #include "task1.h"
 #include "task2.h"
 #include "task3.h"
+#include "task4.h"
 
 // File Peeking:
-// Folosim ftell pentru a salva pozitia curenta si fseek pentru a ne intoarce.
+// Folosim ftell pentru a salva pozitia curenta si fseek pentru a ne intoarce
 // Asta ne permite sa "tragem cu ochiul" la prima linie ca sa stim ce task sa rulam
-// fara sa "stricam" cursorul de citire pentru functiile de solve.
-static int is_task1_input(FILE *fin) {
-    long pos = ftell(fin);
-    char line[256];
-    int ok = 0;
+// fara sa "stricam" cursorul de citire pentru functiile de solve
 
-    while (fgets(line, sizeof(line), fin) != NULL) {
-        char *p = line;
-        while (*p && isspace((unsigned char)*p)) {
-            p++;
-        }
-
-        if (*p == '\0' || *p == '\n' || *p == '\r') {
-            continue;
-        }
-
-        if (*p == '-' || *p == '+' || isdigit((unsigned char)*p)) {
-            ok = 1;
-        }
-        break;
+static void skip_left(char **p) {
+    while (**p != '\0' && isspace((unsigned char)**p)) {
+        (*p)++;
     }
-
-    fseek(fin, pos, SEEK_SET);
-    return ok;
 }
 
-static int is_task3_input(FILE *fin) {
-    long pos = ftell(fin);
+static int parse_int_line(const char *s, int *value) {
+    char *end;
+    long x = strtol(s, &end, 10);
+
+    if (s == end) return 0;
+    while (*end != '\0' && isspace((unsigned char)*end)) end++;
+    if (*end != '\0') return 0;
+
+    *value = (int)x;
+    return 1;
+}
+
+static int first_nonempty(FILE *fin, char *line, int size) {
+    while (fgets(line, size, fin) != NULL) {
+        char *p = line;
+        skip_left(&p);
+        if (*p != '\0' && *p != '\n' && *p != '\r') {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int count_nonempty(FILE *fin) {
     char line[512];
-    int ok = 0;
+    int cnt = 0;
 
     while (fgets(line, sizeof(line), fin) != NULL) {
         char *p = line;
-        while (*p && isspace((unsigned char)*p)) {
-            p++;
+        skip_left(&p);
+        if (*p != '\0' && *p != '\n' && *p != '\r') {
+            cnt++;
         }
-
-        if (*p == '\0' || *p == '\n' || *p == '\r') {
-            continue;
-        }
-
-        if (strchr(p, ',') != NULL) {
-            ok = 1;
-        }
-        break;
     }
-
-    fseek(fin, pos, SEEK_SET);
-    return ok;
+    return cnt;
 }
 
 int main(int argc, const char *const argv[]) {
-    if (argc < 3) {
-        return 1;
-    }
+    if (argc < 3) return 1;
 
     FILE *fin = fopen(argv[1], "r");
     FILE *fout = fopen(argv[2], "w");
 
     if (fin == NULL || fout == NULL) {
-        if (fin != NULL) {
-            fclose(fin);
-        }
-        if (fout != NULL) {
-            fclose(fout);
-        }
+        if (fin != NULL) fclose(fin);
+        if (fout != NULL) fclose(fout);
         return 1;
     }
 
-    if (is_task1_input(fin)) {
-        solveTask1(fin, fout);
-    } else if (is_task3_input(fin)) {
+    long pos = ftell(fin);
+    char line[512];
+
+    if (!first_nonempty(fin, line, sizeof(line))) {
+        fclose(fin);
+        fclose(fout);
+        return 0;
+    }
+
+    if (strchr(line, ',') != NULL) {
+        fseek(fin, pos, SEEK_SET);
         solveTask3(fin, fout);
-    } else {
+    } else if (isalpha((unsigned char)line[0])) {
+        fseek(fin, pos, SEEK_SET);
         solveTask2(fin, fout);
+    } else {
+        int n;
+        if (parse_int_line(line, &n)) {
+            int rem = count_nonempty(fin);
+            fseek(fin, pos, SEEK_SET);
+
+            if (rem == n + 4) {
+                solveTask4(fin, fout);
+            } else {
+                solveTask1(fin, fout);
+            }
+        } else {
+            fseek(fin, pos, SEEK_SET);
+            solveTask1(fin, fout);
+        }
     }
 
     fclose(fin);
